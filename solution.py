@@ -26,6 +26,10 @@ def skill_builder(skill, index, skill_level, skills_dict):
 files = ['a_an_example.in.txt', 'b_better_start_small.in.txt', 'c_collaboration.in.txt',
          'd_dense_schedule.in.txt', 'e_exceptional_skills.in.txt', 'f_find_great_mentors.in.txt']
 def main():
+    contributor_list = None
+    project_list = None
+    skills_dict = None
+    
     with open(files[1]) as f:
         lines = f.readlines()
         data_num = lines[0].rstrip()
@@ -62,8 +66,8 @@ def main():
                     if len(contributor_list) == num_of_ppl:
                         con_left = False
         
-        print(skills_dict)
-        
+    project_list.sort(key=lambda x: x.duration) # Might not be required
+    
 
 if __name__ == '__main__':
     main()
