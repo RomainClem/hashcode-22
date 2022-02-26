@@ -1,9 +1,15 @@
 from tkinter.messagebox import NO
 from contributor import Contributor
+from project import Project
 
 
-def create_con():
-    ...
+def con_builder(c_list, line):
+    c_list.append(Contributor(line[0]))
+    return int(line[1])  
+    
+def pro_builder(p_list, line):
+    p_list.append(Project(line[0], int(line[1]), int(line[2]), int(line[3])))
+    return int(line[4])
     
 
 def main():
@@ -12,11 +18,12 @@ def main():
         data_num = lines[0].rstrip()
         num_of_ppl = int(data_num.split(" ")[0])
         num_of_proj = int(data_num.split(" ")[1])
+        con_left = True
 
         contributor_list = []
         project_list = []
 
-        building_con = False
+        building = False
         skills_count = 0
         
         for i in range(len(lines)):
@@ -25,30 +32,25 @@ def main():
 
             line = lines[i].rstrip().split(" ")
             
-            if len(contributor_list) < num_of_ppl:
-            
-                if not building_con:                
-                    building_con = True
-                    contributor_list.append(Contributor(line[0]))
-                    skills_count = int(line[1])
+            if not building:
+                building = True
+                skills_count = con_builder(contributor_list, line) if len(contributor_list) < num_of_ppl else pro_builder(project_list, line) 
                 
-                elif building_con and skills_count != 0:
-                    contributor_list[-1].skills[line[0]] = line[1]
-                    skills_count -= 1
-                    if skills_count == 0:
-                        building_con = False
-                        
             else:
-                print(line)
-            
-    print()
-
-
-
-
-
-
-            
+                if con_left:
+                    contributor_list[-1].skills[line[0]] = line[1]
+                else:
+                    project_list[-1].skills[line[0]] = line[1]
+                skills_count -= 1
+                if skills_count == 0:
+                    building = False
+                    if len(contributor_list) == num_of_ppl:
+                        con_left = False
+                     
+                        
+                
+    print(contributor_list)
+    print(project_list)            
 
 
 

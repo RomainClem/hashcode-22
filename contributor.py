@@ -3,9 +3,9 @@ class Contributor:
         takes in name,
         takes in a dict of skills
     """
-    def __init__(self, name: str, skills={}) -> None:
+    def __init__(self, name: str) -> None:
         self.name = name
-        self.skills = skills
+        self.skills = {}
 
     def __str__(self) -> str:
         return f'name: {self.name}, skills: {self.skills}'
