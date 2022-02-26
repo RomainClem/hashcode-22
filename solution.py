@@ -47,11 +47,6 @@ def main():
                     if len(contributor_list) == num_of_ppl:
                         con_left = False
                      
-                        
-                
-    print(contributor_list)
-    print(project_list)            
-
 
 
 if __name__ == '__main__':
