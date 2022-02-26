@@ -4,17 +4,25 @@ from project import Project
 
 
 def con_builder(c_list, line):
-    c_list.append(Contributor(line[0]))
+    c_list.append(Contributor(len(c_list), line[0]))
     return int(line[1])  
     
 def pro_builder(p_list, line):
     p_list.append(Project(line[0], int(line[1]), int(line[2]), int(line[3])))
     return int(line[4])
     
+def skill_builder(skill, index, skill_level, skills_dict):
+    if skill in skills_dict:
+        skills_dict[skill][skill_level].append(index)
+    else:
+        skills_dict[skill] = {}
+        skills_dict[skill][skill_level] = [index]
+    
+
 files = ['a_an_example.in.txt', 'b_better_start_small.in.txt', 'c_collaboration.in.txt',
-         'd_dense_schedule.in.txt', 'e_exceptional_skills.in.txt']
+         'd_dense_schedule.in.txt', 'e_exceptional_skills.in.txt', 'f_find_great_mentors.in.txt']
 def main():
-    with open(files[1]) as f:
+    with open(files[0]) as f:
         lines = f.readlines()
         data_num = lines[0].rstrip()
         num_of_ppl = int(data_num.split(" ")[0])
@@ -23,7 +31,8 @@ def main():
 
         contributor_list = []
         project_list = []
-
+        skills_dict = {}
+        
         building = False
         skills_count = 0
         
@@ -40,6 +49,7 @@ def main():
             else:
                 if con_left:
                     contributor_list[-1].skills[line[0]] = line[1]
+                    skill_builder(line[0], len(contributor_list)-1, line[1], skills_dict)
                 else:
                     project_list[-1].skills[line[0]] = line[1]
                 skills_count -= 1
@@ -47,8 +57,9 @@ def main():
                     building = False
                     if len(contributor_list) == num_of_ppl:
                         con_left = False
-                     
-
+        
+        print(skills_dict)
+        
 
 if __name__ == '__main__':
     main()
