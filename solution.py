@@ -11,9 +11,10 @@ def pro_builder(p_list, line):
     p_list.append(Project(line[0], int(line[1]), int(line[2]), int(line[3])))
     return int(line[4])
     
-
+files = ['a_an_example.in.txt', 'b_better_start_small.in.txt', 'c_collaboration.in.txt',
+         'd_dense_schedule.in.txt', 'e_exceptional_skills.in.txt']
 def main():
-    with open('a_an_example.in.txt') as f:
+    with open(files[1]) as f:
         lines = f.readlines()
         data_num = lines[0].rstrip()
         num_of_ppl = int(data_num.split(" ")[0])
