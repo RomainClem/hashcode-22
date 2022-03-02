@@ -8,6 +8,8 @@ class Contributor:
         self.index = index
         self.name = name
         self.skills = {}
+        self.last_project_end = -1
+        self.last_updated_skill = ""
 
     def __str__(self) -> str:
         return f'name: {self.name}, skills: {self.skills}'
