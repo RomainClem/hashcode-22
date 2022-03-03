@@ -11,7 +11,7 @@ class Project:
         self.duration = duration
         self.score = score
         self.best_before = best_before
-        self.skills = {}
+        self.skills = []
 
     def __str__(self) -> str:
         return f'name: {self.name}, duration: {self.duration}, ' \

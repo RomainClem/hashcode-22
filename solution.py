@@ -31,34 +31,34 @@ def add_con(skills_dict, skill, s_l, contributor_list, day, project_build, proje
             contributor_list[c_i].last_project_end = day + project.duration
             project_team_skills.update(contributor_list[c_i].skills)
             return True, c_i
-    return False, c_i
+    return False, -1
 
 def add_con_mentored_lvl_0(skill, contributor_list, day, project_build, project_team_skills, project, added_con):
     for c_i in contributor_list:
         if c_i.last_project_end <= day:
             project_build.append(c_i.name)
-            added_con.append(contributor_list[c_i])
+            added_con.append(c_i) # Could be an error
             c_i.last_project_end = day + project.duration
             project_team_skills.update(c_i.skills)
             c_i.skills[skill] = 1
-        return True, c_i
+            return True, c_i.index
     return False, -1
-
 
 def update_skills_dict(skills_dict, updated_con_skill, contributor_list):
     for ci in updated_con_skill:
         skill = contributor_list[ci].last_updated_skill
         skill_level = contributor_list[ci].skills[skill]
         skill_builder(skill, ci, skill_level, skills_dict)
-        skills_dict[skill][skill_level-1].remove(ci)
-        if len(skills_dict[skill][skill_level-1]) == 0:
-            del skills_dict[skill][skill_level-1]
+        if skill_level > 1:
+            skills_dict[skill][skill_level-1].remove(ci)
+            if len(skills_dict[skill][skill_level-1]) == 0:
+                del skills_dict[skill][skill_level-1]
 
-        
-    ...
+
 files = ['a_an_example.in.txt', 'b_better_start_small.in.txt', 'c_collaboration.in.txt',
          'd_dense_schedule.in.txt', 'e_exceptional_skills.in.txt', 'f_find_great_mentors.in.txt']
-# files = ['a_an_example.in.txt']
+# files = ['b_better_start_small.in.txt']
+
 '''
 skills_dict = {
     "skill_name" = {
@@ -105,14 +105,14 @@ def main():
                         contributor_list[-1].skills[line[0]] = int(line[1])
                         skill_builder(line[0], len(contributor_list)-1, int(line[1]), skills_dict)
                     else:
-                        project_list[-1].skills[line[0]] = int(line[1])
+                        project_list[-1].skills.append([line[0], int(line[1])])
                     skills_count -= 1
                     if skills_count == 0:
                         building = False
                         if len(contributor_list) == num_of_ppl:
                             con_left = False
             
-        # project_list.sort(key=lambda x: x.best_beforeproject_build # Might not be required
+        # project_list.sort(key=lambda x: x.best_before) # Might not be required
         
         day = 0
         project_days = []
@@ -121,8 +121,9 @@ def main():
         while True:
             successful_project = []
 
-            for i in range(len(project_list)):
-                project = project_list[i]
+            for project_index in range(len(project_list)):
+                project = project_list[project_index]
+                
                 project_team_skills = {}
                 project_build = [project.name]
                 added_con = []
@@ -130,7 +131,9 @@ def main():
                 con_found = False
                 project_impossible = False
                 
-                for skill, skill_level in project.skills.items():
+                for i in range(len(project.skills)):
+                    skill = project.skills[i][0]
+                    skill_level = project.skills[i][1]
                     
                     if skill_level in skills_dict[skill]:
                         con_found, c_i = add_con(skills_dict, skill, skill_level, contributor_list, day, project_build, project_team_skills, project, added_con)
@@ -180,9 +183,9 @@ def main():
                 if project_impossible or len(project_build) -1 != len(project.skills):
                     for ci in added_con:
                         ci.last_project_end -= project.duration
-                    for ci in updated_con_skill:
-                        contributor_list[ci].skills[contributor_list[ci].last_updated_skill] -= 1
-                        project_impossible = False
+                    for ci_i in updated_con_skill:
+                        contributor_list[ci_i].skills[contributor_list[ci_i].last_updated_skill] -= 1
+                    project_impossible = False
                 
                 elif len(project.skills) == 1 and len(project_build) == 1:
                     continue
@@ -190,26 +193,26 @@ def main():
                 else:
                     project_output_list.append(project_build)
                     project_days.append(project.duration)
-                    successful_project.append(i)
+                    successful_project.append(project_index)
                     if len(updated_con_skill) > 0:
                         update_skills_dict(skills_dict, updated_con_skill, contributor_list)
-                    
-        
+                            
             if len(project_days) > 0:
                 project_days.sort()
-                day = project_days.pop(0)
+                day += project_days.pop(0)
                 for index in sorted(successful_project, reverse=True):
                     del project_list[index]
                 successful_project = []
                 
-
             else:
                 break
 
         
         print(project_output_list)
         
+        # file_output = ['sol_b.txt', 'sol_c.txt','sol_d.txt', 'sol_e.txt', 'sol_f.txt']
         file_output = ['sol_a.txt', 'sol_b.txt', 'sol_c.txt','sol_d.txt', 'sol_e.txt', 'sol_f.txt']
+        
     
         with open(f'solution/{file_output[j]}', 'w') as f:
             f.write(f"{len(project_output_list)}\n")
